@@ -6,9 +6,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-l')
 args = parser.parse_args()
 
-def showScores(leagues=[]):
-    leagues = leagues or ['NFL', 'MLB', 'NHL', 'NBA', 'NCF']
-
+def showScores(leagues):
     for league in range(len(leagues)):
         response = requests.get('http://wu.apple.com/' + leagues[league].lower() + '/bottomline/xml/scores')
         events = ElementTree.fromstring(response.text)
@@ -24,4 +22,4 @@ def printScores(game):
     game_status = game.find('./STATUS').text
     print "%s: %s, %s: %s. %s" % (away_team, away_score, home_team, home_score, game_status)
 
-showScores(args.l.split(",") if args.l else [])
+showScores(args.l.split(",") if args.l else ['NFL', 'MLB', 'NHL', 'NBA', 'NCF'])
