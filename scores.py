@@ -5,6 +5,7 @@ from xml.etree import ElementTree
 import json
 import argparse
 import requests
+import pytz
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-l')
@@ -17,8 +18,7 @@ home_score = []
 heading = []
 away_score = []
 
-today = str(datetime.date.today())
-yyyymmdd = today.replace('-', '')
+yyyymmdd = int(datetime.datetime.now(pytz.timezone('US/Pacific')).strftime("%Y%m%d"))
 
 def showBoxScore(date, league, team):
     header_space = ''
