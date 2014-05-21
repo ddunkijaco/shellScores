@@ -30,7 +30,4 @@ def printScores(game):
     gStatus = game.find('./STATUS').text
     print aTeam + ': ' + aScore + ', ' + hTeam + ': ' + hScore + '. ' + gStatus
 
-try:
-    showScores(league=args.l)
-except:
-    showScores(league='')
+showScores(args.l if args.l else '')
