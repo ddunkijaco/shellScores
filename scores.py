@@ -6,31 +6,20 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-l')
 args = parser.parse_args()
 
-def showScores(league=''):
-    if league == '':
-        leagues = ['NFL', 'MLB', 'NHL', 'NBA', 'NCF']
-        for league in range(len(leagues)):
-            response = requests.get('http://wu.apple.com/' + leagues[league].lower() + '/bottomline/xml/scores')
-            events = ElementTree.fromstring(response.text) 
-            print '\n' + leagues[league] + ':'
-            for game in events.iter("GAME"):
-                printScores(game)           
-    else:
-        response = requests.get('http://wu.apple.com/' + args.l.lower() + '/bottomline/xml/scores')
-        events = ElementTree.fromstring(response.text) 
-        print league.upper() + ':'
+def showScores(leagues):
+    for league in range(len(leagues)):
+        response = requests.get('http://wu.apple.com/' + leagues[league].lower() + '/bottomline/xml/scores')
+        events = ElementTree.fromstring(response.text)
+        print '\n' + leagues[league] + ':'
         for game in events.iter("GAME"):
             printScores(game)
 
 def printScores(game):
-    hTeam = game.find('./HOME/TEAM').text
-    hScore = game.find('./HOME/SCORE').text
-    aTeam = game.find('./AWAY/TEAM').text
-    aScore = game.find('./AWAY/SCORE').text
-    gStatus = game.find('./STATUS').text
-    print aTeam + ': ' + aScore + ', ' + hTeam + ': ' + hScore + '. ' + gStatus
+    home_team = game.find('./HOME/TEAM').text
+    home_score = game.find('./HOME/SCORE').text
+    away_team = game.find('./AWAY/TEAM').text
+    away_score = game.find('./AWAY/SCORE').text
+    game_status = game.find('./STATUS').text
+    print "%s: %s, %s: %s. %s" % (away_team, away_score, home_team, home_score, game_status)
 
-try:
-    showScores(league=args.l)
-except:
-    showScores(league='')
+showScores(args.l.split(",") if args.l else ['NFL', 'MLB', 'NHL', 'NBA', 'NCF'])
