@@ -23,11 +23,11 @@ def showScores(league=''):
             printScores(game)
 
 def printScores(game):
-    hTeam = game.find('./HOME/TEAM').text
-    hScore = game.find('./HOME/SCORE').text
-    aTeam = game.find('./AWAY/TEAM').text
-    aScore = game.find('./AWAY/SCORE').text
-    gStatus = game.find('./STATUS').text
-    print aTeam + ': ' + aScore + ', ' + hTeam + ': ' + hScore + '. ' + gStatus
+    home_team = game.find('./HOME/TEAM').text
+    home_score = game.find('./HOME/SCORE').text
+    away_team = game.find('./AWAY/TEAM').text
+    away_score = game.find('./AWAY/SCORE').text
+    game_status = game.find('./STATUS').text
+    print "%s: %s, %s: %s. %s" % (away_team, away_score, home_team, home_score, game_status)
 
 showScores(args.l if args.l else '')
