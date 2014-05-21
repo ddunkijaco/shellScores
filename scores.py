@@ -24,7 +24,7 @@ url = 'http://scores.nbcsports.msnbc.com/ticker/data/gamesMSNBC.js.asp?jsonp=tru
 
 def getBoxScore(date, url, league, team):
     header_space = ''
-    header_print = ' '
+    header_print = ''
     away_print = ''
     home_print = ''
     f = urllib2.urlopen(url % (league, date))
@@ -48,7 +48,11 @@ def getBoxScore(date, url, league, team):
             elif gamestate_tree.get('status') == "In-Progress" or gamestate_tree.get('status') == "Final":                
                 print '%s: %s %s' % (gamestate_tree.get('status'), gamestate_tree.get('display_status1'), gamestate_tree.get('display_status2'))
                 for score in home_tree.findall('score'):
-                    heading.append(score.attrib.get('heading'))
+                    if len(score.attrib.get('heading')) == 1:
+                        heading.append(' %s ' % score.attrib.get('heading'))
+                    elif len(score.attrib.get('heading')) == 2:
+                        heading.append(' %s' % score.attrib.get('heading'))
+                    else: heading.append('%s' % score.attrib.get('heading'))
                     if len(score.attrib.get('value')) == 1:
                         home_score.append(' %s ' % score.attrib.get('value'))
                     elif len(score.attrib.get('value')) == 2:
@@ -67,9 +71,10 @@ def getBoxScore(date, url, league, team):
                 while len(header_space) < len(away):
                     header_space = header_space + ' '
                 for x in range(len(heading)):
-                    header_print += '' + heading[x] + ' | '
+                    header_print += '' + heading[x] + '|'
                     away_print += '' + away_score[x] + '|'
                     home_print += '' + home_score[x] + '|'
+                print len(heading)
                 print header_space + '|' + header_print
                 print away + '|' + away_print
                 print home + '|' + home_print
