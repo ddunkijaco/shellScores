@@ -7,8 +7,7 @@ parser.add_argument('-l')
 args = parser.parse_args()
 
 def showScores(leagues=[]):
-    if leagues == []:
-        leagues = ['NFL', 'MLB', 'NHL', 'NBA', 'NCF']
+    leagues = leagues or ['NFL', 'MLB', 'NHL', 'NBA', 'NCF']
 
     for league in range(len(leagues)):
         response = requests.get('http://wu.apple.com/' + leagues[league].lower() + '/bottomline/xml/scores')
