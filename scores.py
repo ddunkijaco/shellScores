@@ -20,17 +20,14 @@ away_score = []
 today = str(datetime.date.today())
 yyyymmdd = today.replace('-', '')
 
-def getBoxScore(date, league, team):
+def showBoxScore(date, league, team):
     header_space = ''
     header_print = ''
     away_print = ''
     home_print = ''
-    url = 'http://scores.nbcsports.msnbc.com/ticker/data/gamesMSNBC.js.asp?jsonp=true&sport=%s&period=%s'
-    f = urllib2.urlopen(url % (league, date))
-    jsonp = f.read()
-    f.close()
-    json_str = jsonp.replace('shsMSNBCTicker.loadGamesData(', '').replace(');', '')
-    json_parsed = json.loads(json_str)
+    url = 'http://scores.nbcsports.msnbc.com/ticker/data/gamesMSNBC.js.asp?sport=%s&period=%s'
+    r = requests.get(url % (league, date))
+    json_parsed = r.json()
     for game_str in json_parsed.get('games', []):
         game_tree = ElementTree.XML(game_str)
         away_tree = game_tree.find('visiting-team')
@@ -105,7 +102,7 @@ def printScores(game):
     print "%s: %s, %s: %s. %s" % (away_team, away_score, home_team, home_score, game_status)
 
 if args.t:
-    getBoxScore(args.d if args.d else yyyymmdd,args.l,args.t)
+    showBoxScore(args.d if args.d else yyyymmdd,args.l,args.t)
 else: showScores(args.l.split(",") if args.l else ['NFL', 'MLB', 'NHL', 'NBA', 'NCF'])
 
 
