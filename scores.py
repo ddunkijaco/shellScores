@@ -19,13 +19,13 @@ away_score = []
 
 today = str(datetime.date.today())
 yyyymmdd = today.replace('-', '')
-url = 'http://scores.nbcsports.msnbc.com/ticker/data/gamesMSNBC.js.asp?jsonp=true&sport=%s&period=%s'
 
-def getBoxScore(date, url, league, team):
+def getBoxScore(date, league, team):
     header_space = ''
     header_print = ''
     away_print = ''
     home_print = ''
+    url = 'http://scores.nbcsports.msnbc.com/ticker/data/gamesMSNBC.js.asp?jsonp=true&sport=%s&period=%s'
     f = urllib2.urlopen(url % (league, date))
     jsonp = f.read()
     f.close()
@@ -36,16 +36,16 @@ def getBoxScore(date, url, league, team):
         away_tree = game_tree.find('visiting-team')
         home_tree = game_tree.find('home-team')
         gamestate_tree = game_tree.find('gamestate')
-        home = home_tree.get('nickname')
-        away = away_tree.get('nickname')
+        home_nickname = home_tree.get('nickname')
+        away_nickname = away_tree.get('nickname')
         home_alias = home_tree.get('alias')
         away_alias = away_tree.get('alias')
         team = team.lower()
-        if away.lower() == team or home.lower() == team or home_alias.lower() == team or away_alias.lower() == team:
+        if away_nickname.lower() == team or home_nickname.lower() == team or home_alias.lower() == team or away_alias.lower() == team:
             if gamestate_tree.get('status') == "Pre-Game":
                 print "Game starting at " + gamestate_tree.get('gametime') + " ET"
             elif gamestate_tree.get('status') == "In-Progress" or gamestate_tree.get('status') == "Delayed" or gamestate_tree.get('status').startswith("Final"):                
-                print '%s: %s %s' % (gamestate_tree.get('status'), gamestate_tree.get('display_status1'), gamestate_tree.get('display_status2'))
+                print '%s: %s %s %s' % (gamestate_tree.get('status'), gamestate_tree.get('display_status1'), gamestate_tree.get('display_status2'),gamestate_tree.get('reason'))
                 for score in home_tree.findall('score'):
                     if len(score.attrib.get('value')) == 1:
                         home_score.append(' %s ' % score.attrib.get('value'))
@@ -63,11 +63,11 @@ def getBoxScore(date, url, league, team):
                     elif len(score.attrib.get('value')) == 2:
                         away_score.append(' %s' % score.attrib.get('value'))
                     else: away_score.append('%s' % score.attrib.get('value'))
-                while len(away) < len(home):
-                    away = away + ' '
-                while len(home) < len(away):
-                    home = home + ' '
-                while len(header_space) < len(away):
+                while len(away_nickname) < len(home_nickname):
+                    away_nickname = away_nickname + ' '
+                while len(home_nickname) < len(away_nickname):
+                    home_nickname = home_nickname + ' '
+                while len(header_space) < len(away_nickname):
                     header_space = header_space + ' '
                 for x in range(len(heading)):
                     header_print += heading[x] + '|'
@@ -84,8 +84,8 @@ def getBoxScore(date, url, league, team):
                         home_print += home_score[x] + '|'
                 
                 print header_space + ' |' + header_print
-                print away + ' |' + away_print
-                print home + ' |' + home_print
+                print away_nickname + ' |' + away_print
+                print home_nickname + ' |' + home_print
                 break
         
 def showScores(leagues):
@@ -105,7 +105,7 @@ def printScores(game):
     print "%s: %s, %s: %s. %s" % (away_team, away_score, home_team, home_score, game_status)
 
 if args.t:
-    getBoxScore(args.d if args.d else yyyymmdd, url,args.l,args.t)
+    getBoxScore(args.d if args.d else yyyymmdd,args.l,args.t)
 else: showScores(args.l.split(",") if args.l else ['NFL', 'MLB', 'NHL', 'NBA', 'NCF'])
 
 
