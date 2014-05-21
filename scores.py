@@ -51,11 +51,15 @@ def getBoxScore(date, url, league, team):
                     heading.append(score.attrib.get('heading'))
                     if len(score.attrib.get('value')) == 1:
                         home_score.append(' %s ' % score.attrib.get('value'))
-                    else: home_score.append(' %s' % score.attrib.get('value'))     
+                    elif len(score.attrib.get('value')) == 2:
+                        home_score.append(' %s' % score.attrib.get('value'))
+                    else: home_score.append('%s' % score.attrib.get('value'))
                 for score in away_tree.findall('score'):
                     if len(score.attrib.get('value')) == 1:
                         away_score.append(' %s ' % score.attrib.get('value'))
-                    else: away_score.append(' %s' % score.attrib.get('value'))
+                    elif len(score.attrib.get('value')) == 2:
+                        away_score.append(' %s' % score.attrib.get('value'))
+                    else: away_score.append('%s' % score.attrib.get('value'))
                 while len(away) < len(home):
                     away = away + ' '
                 while len(home) < len(away):
@@ -66,9 +70,9 @@ def getBoxScore(date, url, league, team):
                     header_print += '' + heading[x] + ' | '
                     away_print += '' + away_score[x] + '|'
                     home_print += '' + home_score[x] + '|'
-                print header_space + ' |' + header_print
-                print away + ' |' + away_print
-                print home + ' |' + home_print
+                print header_space + '|' + header_print
+                print away + '|' + away_print
+                print home + '|' + home_print
                 break
         
 def showScores(leagues):
