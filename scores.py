@@ -5,7 +5,6 @@ from xml.etree import ElementTree
 import json
 import argparse
 import requests
-import pytz
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-l')
@@ -18,7 +17,8 @@ home_score = []
 heading = []
 away_score = []
 
-yyyymmdd = int(datetime.datetime.now(pytz.timezone('US/Pacific')).strftime("%Y%m%d"))
+today = str(datetime.date.today())
+yyyymmdd = today.replace('-', '')
 
 def showBoxScore(date, league, team):
     header_space = ''
@@ -43,13 +43,13 @@ def showBoxScore(date, league, team):
                 print "Game starting at " + gamestate_tree.get('gametime') + " ET"
             elif gamestate_tree.get('status') == "In-Progress" or gamestate_tree.get('status') == "Delayed" or gamestate_tree.get('status').startswith("Final"):                
                 print '%s: %s %s %s' % (gamestate_tree.get('status'), gamestate_tree.get('display_status1'), gamestate_tree.get('display_status2'),gamestate_tree.get('reason'))
-                for score in home_tree.findall('score'):
+                for score in home_tree.findall('score'): #space out home scores
                     if len(score.attrib.get('value')) == 1:
                         home_score.append(' %s ' % score.attrib.get('value'))
                     elif len(score.attrib.get('value')) == 2:
                         home_score.append(' %s' % score.attrib.get('value'))
                     else: home_score.append('%s' % score.attrib.get('value'))
-                for score in away_tree.findall('score'):
+                for score in away_tree.findall('score'): #space out away scores
                     if len(score.attrib.get('heading')) == 1:
                         heading.append(' %s ' % score.attrib.get('heading'))
                     elif len(score.attrib.get('heading')) == 2:
@@ -60,17 +60,17 @@ def showBoxScore(date, league, team):
                     elif len(score.attrib.get('value')) == 2:
                         away_score.append(' %s' % score.attrib.get('value'))
                     else: away_score.append('%s' % score.attrib.get('value'))
-                while len(away_nickname) < len(home_nickname):
+                while len(away_nickname) < len(home_nickname): #equalize home/away lengths
                     away_nickname = away_nickname + ' '
                 while len(home_nickname) < len(away_nickname):
                     home_nickname = home_nickname + ' '
                 while len(header_space) < len(away_nickname):
                     header_space = header_space + ' '
-                for x in range(len(heading)):
+                for x in range(len(heading)): #combine period/inning scores
                     header_print += heading[x] + '|'
                     away_print += away_score[x] + '|'
-                if len(home_score) < len(away_score): 
-                    for x in range(len(home_score)-3):
+                if len(home_score) < len(away_score): #if away team has batted but home team has not, create blank square
+                    for x in range(len(home_score)-3): 
                         home_print += home_score[x] + '|'
                     home_print += '   |'
                     home_print += home_score[-3] + '|'
