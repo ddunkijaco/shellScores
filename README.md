@@ -1,7 +1,7 @@
 shellScores
 ===========
 
-shellScores is a python script to show recent sports scores in the console.
+shellScores is a python script created to show recent sports scores in the console.
 
 shellScores requires Python 2.7 and the [Requests library](http://docs.python-requests.org/en/latest/) which can be installed via Python's easy_install using:
 ```
