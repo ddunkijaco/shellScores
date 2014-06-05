@@ -1,18 +1,23 @@
 shellScores
 ===========
 
-shellScores python script to show recent sports scores in the console.
+shellScores is a python script to show recent sports scores in the console.
 
-shellScores requires Python 2.7 and the Requests library which can be installed via Python's easy_install using:
+shellScores requires Python 2.7 and the [Requests library](http://docs.python-requests.org/en/latest/) which can be installed via Python's easy_install using:
 ```
 $ easy_install requests
 ```
 
-Boxscore data is provided by MSNBC, league score data by ESPN and odds by Bovada.
+If easy\_install is not installed, download ez\_setup [here](https://bootstrap.pypa.io/ez_setup.py) and install Python's setuptools by running:
+```
+$ python path/to/ez_setup.py
+```
 
-###Usage
+Boxscore data is provided by MSNBC, league score data by ESPN and odds by Bovada via their JSON-based web APIs.
+
+Usage
 ===========
-Executing scores.py without any arguments will provide a list of valid leagues and the most recent available scores as well as a starting time or current progress.
+Executing scores.py without any arguments will provide a list of valid leagues and the most recent available scores as well as their respective starting time or current progress.
 
 ```
 $ python scores.py
@@ -43,7 +48,7 @@ EAST: 23, WEST: 13. FINAL
 AMERICAN: 17, NATIONAL: 31. FINAL
 NORTH: 10, SOUTH: 20. FINAL
 ```
-###Arguments
+Arguments
 ===========
 ####The -l argument
 The use of the -l argument followed by the three letter abbreviation of a valid league [MLB, NFL, NBA, NHL, NCF] will print the scores and status of games occuring today in that league.
@@ -76,7 +81,15 @@ Giants | 0 | 2 | 0 | 3 | 0 | 0 | 1 | 0 | 0 | 6 | 11| 0 |
 Reds   | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 3 | 0 |
 ```
 
-The box score will grow or shrink based on current number of innings/periods/quarters. if the g
+The box score will grow or shrink based on current number of innings/periods/quarters.
+
+```
+$ python scores.py -l MLB -t MIA
+In-Progress: Bot 6th
+        | 1 | 2 | 3 | 4 | 5 | 6 | R | H | E |
+Marlins | 0 | 0 | 0 | 3 | 0 | 3 | 6 | 10| 0 |
+Rays    | 1 | 0 | 0 | 0 | 2 | 2 | 5 | 9 | 0 |
+```
 
 If the game has not begun, the script will print the starting time.
 
@@ -99,7 +112,7 @@ Reds   | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 7 | 0 |
 ```
 
 ####The -odds argument
-Using -odds followed by a valid league will provide the moneyline odds for games in that league for the current day.
+Using -odds followed by a valid league [MLB, NFL, NBA, NHL, NCF] will provide the moneyline odds for games in that league for the current day.
 ```
 $ python scores.py -odds MLB
 
